@@ -2267,9 +2267,9 @@ exception_table:
 .LC23:
 	.ascii	" \000"
 .LC25:
-	.ascii	"Nov  5 2019\000"
+	.ascii	"Nov  6 2019\000"
 .LC27:
-	.ascii	"14:30:20\000"
+	.ascii	"11:17:01\000"
 .LC29:
 	.ascii	"X\012\015\000"
 .LC31:

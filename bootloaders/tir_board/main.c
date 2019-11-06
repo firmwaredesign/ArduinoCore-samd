@@ -268,6 +268,7 @@ int main(void)
         sam_ba_monitor_run();
       }
     }
+    // serial_putc(0x41);
 #endif
   }
 }
