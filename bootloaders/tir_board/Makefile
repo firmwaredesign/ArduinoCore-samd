@@ -57,7 +57,7 @@ SIZE=$(ARM_GCC_PATH)size
 
 # -----------------------------------------------------------------------------
 # Boards definitions
-BOARD_ID?=arduino_zero
+BOARD_ID?=arduino_mkrzero
 NAME?=samd21_sam_ba
 
 # -----------------------------------------------------------------------------
