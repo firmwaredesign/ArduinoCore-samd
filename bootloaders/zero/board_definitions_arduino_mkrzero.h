@@ -41,15 +41,15 @@
  * If BOOT_LOAD_PIN is defined the bootloader is started if the selected
  * pin is tied LOW.
  */
-//#define BOOT_LOAD_PIN                     PIN_PA21
+//#define BOOT_LOAD_PIN                     PIN_PA03
 //#define BOOT_LOAD_PIN                     PIN_PA15
 
-#define BOOT_USART_MODULE                 SERCOM5
-#define BOOT_USART_BUS_CLOCK_INDEX        PM_APBCMASK_SERCOM5
-#define BOOT_USART_PER_CLOCK_INDEX        GCLK_CLKCTRL_ID_SERCOM5_CORE_Val
+#define BOOT_USART_MODULE                 SERCOM0
+#define BOOT_USART_BUS_CLOCK_INDEX        PM_APBCMASK_SERCOM0
+#define BOOT_USART_PER_CLOCK_INDEX        GCLK_CLKCTRL_ID_SERCOM0_CORE_Val
 #define BOOT_USART_PAD_SETTINGS           UART_RX_PAD3_TX_PAD2
-#define BOOT_USART_PAD3                   PINMUX_PB23D_SERCOM5_PAD3
-#define BOOT_USART_PAD2                   PINMUX_PB22D_SERCOM5_PAD2
+#define BOOT_USART_PAD3                   PINMUX_PA07D_SERCOM0_PAD3
+#define BOOT_USART_PAD2                   PINMUX_PA06D_SERCOM0_PAD2
 #define BOOT_USART_PAD1                   PINMUX_UNUSED
 #define BOOT_USART_PAD0                   PINMUX_UNUSED
 
@@ -59,6 +59,7 @@
 
 /* Frequency of the board main oscillator */
 #define VARIANT_MAINOSC                   (32768ul)
+#define CRYSTALLESS                       (1)
 
 /* Calibration values for DFLL48 pll */
 #define NVM_SW_CALIB_DFLL48M_COARSE_VAL   (58)
@@ -68,8 +69,8 @@
  * LEDs definitions
  */
 // PB08 (digital pin 32)
-#define BOARD_LED_PORT                    (1)
-#define BOARD_LED_PIN                     (8)
+#define BOARD_LED_PORT                    (0)
+#define BOARD_LED_PIN                     (3)
 
 // No RX/TX led
 //#define BOARD_LEDRX_PORT

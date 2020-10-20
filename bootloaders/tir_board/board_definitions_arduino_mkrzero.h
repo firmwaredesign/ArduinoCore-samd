@@ -41,7 +41,7 @@
  * If BOOT_LOAD_PIN is defined the bootloader is started if the selected
  * pin is tied LOW.
  */
-//#define BOOT_LOAD_PIN                     PIN_PA21
+#define BOOT_LOAD_PIN                     PIN_PA03
 //#define BOOT_LOAD_PIN                     PIN_PA15
 
 #define BOOT_USART_MODULE                 SERCOM0
@@ -58,7 +58,9 @@
 #define VARIANT_MCK                       CPU_FREQUENCY
 
 /* Frequency of the board main oscillator */
-#define VARIANT_MAINOSC                   (32768ul)
+#define VARIANT_MAINOSC                   (8000000ul)
+#define CRYSTALLESS                       (1)
+
 
 /* Calibration values for DFLL48 pll */
 #define NVM_SW_CALIB_DFLL48M_COARSE_VAL   (58)
@@ -68,8 +70,8 @@
  * LEDs definitions
  */
 // PB08 (digital pin 32)
-#define BOARD_LED_PORT                    (0)
-#define BOARD_LED_PIN                     (3)
+#define BOARD_LED_PORT                    (1)
+#define BOARD_LED_PIN                     (8)
 
 // No RX/TX led
 //#define BOARD_LEDRX_PORT

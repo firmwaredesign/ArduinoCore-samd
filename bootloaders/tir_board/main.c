@@ -131,7 +131,6 @@ static void check_start_application(void)
   }
 #endif
 
-/*
 #if defined(BOOT_LOAD_PIN)
   volatile PortGroup *boot_port = (volatile PortGroup *)(&(PORT->Group[BOOT_LOAD_PIN / 32]));
   volatile bool boot_en;
@@ -150,7 +149,6 @@ static void check_start_application(void)
     return;
   }
 #endif
-*/
 
 //  LED_on();
 #ifdef CONFIGURE_PMIC
