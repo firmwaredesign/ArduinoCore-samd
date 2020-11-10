@@ -58,9 +58,6 @@ static volatile bool jump_to_app = false;
  */
 static void check_start_application(void)
 {
-//  LED_init();
-//  LED_off();
-
   /*
    * Test sketch stack pointer @ &__sketch_vectors_ptr
    * Stay in SAM-BA if value @ (&__sketch_vectors_ptr) == 0xFFFFFFFF (Erased flash cell value)
@@ -173,10 +170,12 @@ static void check_start_application(void)
  */
 int main(void)
 {
-#if defined(SAM_BA_USBCDC_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
-  P_USB_CDC pCdc;
-#endif
-  DEBUG_PIN_HIGH;
+
+  // TR: Set IRQ1_N pin low to signal in bootloader
+  PORT->Group[0].DIRSET.reg = 1;  // Set pin PA00 as output
+  PORT->Group[0].OUTCLR.reg = 1;  // Set pin PA00 LOW
+  // PORT->Group[0].OUTSET.reg = 1; // Example of setting PA00 HIGH
+
 
   /* Jump in application if condition is satisfied */
   check_start_application();

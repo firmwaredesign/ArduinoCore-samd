@@ -49,8 +49,8 @@
 #define BOOT_USART_BUS_CLOCK_INDEX        PM_APBCMASK_SERCOM0
 #define BOOT_USART_PER_CLOCK_INDEX        GCLK_CLKCTRL_ID_SERCOM0_CORE_Val
 #define BOOT_USART_PAD_SETTINGS           UART_RX_PAD3_TX_PAD2
-#define BOOT_USART_PAD3                   PINMUX_PA11C_SERCOM0_PAD3
-#define BOOT_USART_PAD2                   PINMUX_PA10C_SERCOM0_PAD2
+#define BOOT_USART_PAD3                   PINMUX_PA07D_SERCOM0_PAD3
+#define BOOT_USART_PAD2                   PINMUX_PA06D_SERCOM0_PAD2
 #define BOOT_USART_PAD1                   PINMUX_UNUSED
 #define BOOT_USART_PAD0                   PINMUX_UNUSED
 
@@ -60,7 +60,8 @@
 #define VARIANT_MCK                       CPU_FREQUENCY
 
 /* Frequency of the board main oscillator */
-#define VARIANT_MAINOSC                   (32768ul)
+#define VARIANT_MAINOSC                   (8000000ul)
+#define CRYSTALLESS                       (1)
 
 /* Calibration values for DFLL48 pll */
 #define NVM_SW_CALIB_DFLL48M_COARSE_VAL   (58)
