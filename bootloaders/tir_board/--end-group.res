@@ -34,18 +34,19 @@ build/board_startup.o 14
 285 4c05be723fa0e4c5 UNDEF __StackTop
 197 4c05be723fa0e4c5 RESOLVED_IR SysTick_Handler
 200 4c05be723fa0e4c5 RESOLVED_IR main
-build/main.o 11
-338 b6a63a8990738ea0 PREVAILING_DEF_IRONLY pulSketch_Start_Address
-313 b6a63a8990738ea0 PREVAILING_DEF main
-315 b6a63a8990738ea0 PREVAILING_DEF_IRONLY SysTick_Handler
-334 b6a63a8990738ea0 UNDEF __sketch_vectors_ptr
-317 b6a63a8990738ea0 RESOLVED_IR sam_ba_monitor_run
-321 b6a63a8990738ea0 RESOLVED_IR sam_ba_monitor_init
-323 b6a63a8990738ea0 RESOLVED_IR serial_sharp_received
-325 b6a63a8990738ea0 RESOLVED_IR serial_open
-327 b6a63a8990738ea0 RESOLVED_IR board_init
-329 b6a63a8990738ea0 RESOLVED_IR sam_ba_monitor_sys_tick
-332 b6a63a8990738ea0 RESOLVED_IR LED_pulse
+build/main.o 12
+308 cb1d43c495797f75 PREVAILING_DEF main
+340 cb1d43c495797f75 PREVAILING_DEF_IRONLY jump_on_timeout
+311 cb1d43c495797f75 PREVAILING_DEF_IRONLY SysTick_Handler
+352 cb1d43c495797f75 PREVAILING_DEF_IRONLY jump_cnt
+356 cb1d43c495797f75 PREVAILING_DEF_IRONLY pulSketch_Start_Address
+315 cb1d43c495797f75 RESOLVED_IR serial_putc
+317 cb1d43c495797f75 RESOLVED_IR sam_ba_monitor_run
+321 cb1d43c495797f75 RESOLVED_IR sam_ba_monitor_init
+323 cb1d43c495797f75 RESOLVED_IR serial_sharp_received
+325 cb1d43c495797f75 RESOLVED_IR serial_open
+327 cb1d43c495797f75 RESOLVED_IR board_init
+329 cb1d43c495797f75 RESOLVED_IR sam_ba_monitor_sys_tick
 build/sam_ba_usb.o 13
 1355 8c508ad963ddb961 PREVAILING_DEF_IRONLY usb_init
 1415 8c508ad963ddb961 PREVAILING_DEF_IRONLY sam_ba_cdc

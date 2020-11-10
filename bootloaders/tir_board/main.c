@@ -32,6 +32,10 @@
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
+#define BOOTLOADER_WAIT_TIME_MS 9600  // 200ms ( * 48)
+volatile bool jump_on_timeout = false;
+volatile uint16_t jump_cnt = 0;
+
 volatile uint32_t* pulSketch_Start_Address;
 
 static void jump_to_application(void) {
@@ -147,7 +151,6 @@ static void check_start_application(void)
   }
 #endif
 
-//  LED_on();
 #ifdef CONFIGURE_PMIC
   jump_to_app = true;
 #else
@@ -176,9 +179,34 @@ int main(void)
   PORT->Group[0].OUTCLR.reg = 1;  // Set pin PA00 LOW
   // PORT->Group[0].OUTSET.reg = 1; // Example of setting PA00 HIGH
 
+  // Enable SERCOM3 as SPI to FPGA
+  PORT->Group[0].PMUX[11].reg = 0x22;    // Peripherial MUX for PA22 and PA23
+  PORT->Group[0].PINCFG[22].reg = 0x01;  // Enable peripherial pin
+  PORT->Group[0].PINCFG[23].reg = 0x01;  // Enable peripherial pin
+
+  //Setting the Software Reset bit to 1
+  SERCOM3->SPI.CTRLA.bit.SWRST = 1;
+  //Wait both bits Software Reset from CTRLA and SYNCBUSY are equal to 0
+  while(SERCOM3->SPI.CTRLA.bit.SWRST || SERCOM3->SPI.SYNCBUSY.bit.SWRST);
+
+  // Enable clock to SERCOM3
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID( 0x17U ) | // Generic Clock 0 (SERCOMx)
+                      GCLK_CLKCTRL_GEN_GCLK0 | // Generic Clock Generator 0 is source
+                      GCLK_CLKCTRL_CLKEN ;
+
+  SERCOM3->SPI.CTRLA.reg = SERCOM_SPI_CTRLA_MODE_SPI_MASTER |
+                           SERCOM_SPI_CTRLA_DOPO(0) |
+                           SERCOM_SPI_CTRLA_DIPO(3);
+  SERCOM3->SPI.CTRLA.bit.CPOL = 0;
+  SERCOM3->SPI.CTRLA.bit.CPHA = 1;
+  SERCOM3->SPI.CTRLB.reg = SERCOM_SPI_CTRLB_RXEN;	//Active the SPI receiver.  
+  SERCOM3->SPI.BAUD.reg = 7;  // 3 MHz SPI
+
+  SERCOM3->SPI.CTRLA.bit.ENABLE = 1;
+  while(SERCOM3->SPI.SYNCBUSY.bit.ENABLE);
 
   /* Jump in application if condition is satisfied */
-  check_start_application();
+  //check_start_application();
 
   /* We have determined we should stay in the monitor. */
   /* System initialization */
@@ -224,11 +252,11 @@ int main(void)
   DEBUG_PIN_LOW;
 
   /* Initialize LEDs */
-  LED_init();
+/*  LED_init();
   LEDRX_init();
   LEDRX_off();
   LEDTX_init();
-  LEDTX_off();
+  LEDTX_off(); */
 
   /* Start the sys tick (1 ms) */
   SysTick_Config(1000);
@@ -267,12 +295,27 @@ int main(void)
     }
     // serial_putc(0x41);
 #endif
+
+    if (jump_on_timeout)
+    {
+      // check_start_application();
+      jump_on_timeout = false;
+      jump_on_timeout = 0;
+      serial_putc(0xAA);
+      SERCOM3->SPI.DATA.reg = 0x47;
+    }
+
   }
 }
 
 void SysTick_Handler(void)
 {
-  LED_pulse();
+  //LED_pulse();
 
   sam_ba_monitor_sys_tick();
+  jump_cnt++;
+  if (jump_cnt == BOOTLOADER_WAIT_TIME_MS)
+  {
+    jump_on_timeout = true;
+  }
 }

@@ -1,3 +1,5 @@
 samd21_sam_ba.bin
 samd21_sam_ba.hex
-
+*.o
+*.s
+*.res
