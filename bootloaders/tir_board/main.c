@@ -167,6 +167,12 @@ static void check_start_application(void)
 #	define DEBUG_PIN_LOW 	do{}while(0)
 #endif
 
+void sendFPGAByte(uint8_t sendByte)
+{
+      SERCOM3->SPI.DATA.reg = sendByte;
+      while (SERCOM3->SPI.INTFLAG.bit.TXC == 0);  // Busy wait until SPI TX completed
+}
+
 /**
  *  \brief SAMD21 SAM-BA Main loop.
  *  \return Unused (ANSI-C compatibility).
@@ -201,7 +207,7 @@ int main(void)
                            SERCOM_SPI_CTRLA_DOPO(0) |
                            SERCOM_SPI_CTRLA_DIPO(3);
   SERCOM3->SPI.CTRLA.bit.CPOL = 0;
-  SERCOM3->SPI.CTRLA.bit.CPHA = 1;
+  SERCOM3->SPI.CTRLA.bit.CPHA = 0;
   SERCOM3->SPI.CTRLB.reg = SERCOM_SPI_CTRLB_RXEN;	//Active the SPI receiver.  
   SERCOM3->SPI.BAUD.reg = 7;  // 3 MHz SPI
 
@@ -305,7 +311,9 @@ int main(void)
       jump_on_timeout = false;
       jump_on_timeout = 0;
       serial_putc(0xAA);
-      SERCOM3->SPI.DATA.reg = 0x47;
+      sendFPGAByte(0x47);
+      sendFPGAByte(0xAA);
+      sendFPGAByte(0x55);
     }
 
   }

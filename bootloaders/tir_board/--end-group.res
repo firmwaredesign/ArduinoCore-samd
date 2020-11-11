@@ -34,19 +34,20 @@ build/board_startup.o 14
 285 4c05be723fa0e4c5 UNDEF __StackTop
 197 4c05be723fa0e4c5 RESOLVED_IR SysTick_Handler
 200 4c05be723fa0e4c5 RESOLVED_IR main
-build/main.o 12
-308 be9b8e77dbfad4d4 PREVAILING_DEF main
-340 be9b8e77dbfad4d4 PREVAILING_DEF_IRONLY jump_on_timeout
-311 be9b8e77dbfad4d4 PREVAILING_DEF_IRONLY SysTick_Handler
-352 be9b8e77dbfad4d4 PREVAILING_DEF_IRONLY jump_cnt
-356 be9b8e77dbfad4d4 PREVAILING_DEF_IRONLY pulSketch_Start_Address
-315 be9b8e77dbfad4d4 RESOLVED_IR serial_putc
-317 be9b8e77dbfad4d4 RESOLVED_IR sam_ba_monitor_run
-321 be9b8e77dbfad4d4 RESOLVED_IR sam_ba_monitor_init
-323 be9b8e77dbfad4d4 RESOLVED_IR serial_sharp_received
-325 be9b8e77dbfad4d4 RESOLVED_IR serial_open
-327 be9b8e77dbfad4d4 RESOLVED_IR board_init
-329 be9b8e77dbfad4d4 RESOLVED_IR sam_ba_monitor_sys_tick
+build/main.o 13
+309 1fb278e7178035ea PREVAILING_DEF_IRONLY sendFPGAByte
+312 1fb278e7178035ea PREVAILING_DEF main
+342 1fb278e7178035ea PREVAILING_DEF_IRONLY jump_on_timeout
+315 1fb278e7178035ea PREVAILING_DEF_IRONLY SysTick_Handler
+354 1fb278e7178035ea PREVAILING_DEF_IRONLY jump_cnt
+358 1fb278e7178035ea PREVAILING_DEF_IRONLY pulSketch_Start_Address
+319 1fb278e7178035ea RESOLVED_IR serial_putc
+321 1fb278e7178035ea RESOLVED_IR sam_ba_monitor_run
+323 1fb278e7178035ea RESOLVED_IR sam_ba_monitor_init
+325 1fb278e7178035ea RESOLVED_IR serial_sharp_received
+327 1fb278e7178035ea RESOLVED_IR serial_open
+329 1fb278e7178035ea RESOLVED_IR board_init
+331 1fb278e7178035ea RESOLVED_IR sam_ba_monitor_sys_tick
 build/sam_ba_usb.o 13
 1355 8c508ad963ddb961 PREVAILING_DEF_IRONLY usb_init
 1415 8c508ad963ddb961 PREVAILING_DEF_IRONLY sam_ba_cdc
