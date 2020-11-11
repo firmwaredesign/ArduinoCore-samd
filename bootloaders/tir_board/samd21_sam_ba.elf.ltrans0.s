@@ -744,12 +744,16 @@ main:
 	ldr	r2, .L268+4
 	ldr	r4, .L268+8
 	strb	r1, [r2]
-	ldr	r2, .L268+12
+	ldr	r1, .L268+12
 	sub	sp, sp, #60
-	strb	r3, [r2]
-	ldr	r2, .L268+16
+	ldrb	r2, [r1]
 	add	r7, sp, #0
-	strb	r3, [r2]
+	orrs	r2, r3
+	strb	r2, [r1]
+	ldr	r1, .L268+16
+	ldrb	r2, [r1]
+	orrs	r2, r3
+	strb	r2, [r1]
 	ldr	r2, [r4]
 	orrs	r3, r2
 	str	r3, [r4]
@@ -762,27 +766,34 @@ main:
 	bmi	.L146
 	ldr	r3, .L268+20
 	ldr	r2, .L268+24
-	ldr	r1, .L268+28
 	strh	r3, [r2, #2]
-	ldr	r3, .L268+32
-	str	r3, [r4]
-	ldr	r3, [r4]
-	ands	r3, r1
-	str	r3, [r4]
-	movs	r3, #128
-	ldr	r1, [r4]
-	lsls	r3, r3, #21
-	orrs	r3, r1
-	str	r3, [r4]
-	movs	r3, #128
-	lsls	r3, r3, #10
-	str	r3, [r4, #4]
-	movs	r3, #7
-	strb	r3, [r4, #12]
-	ldr	r1, [r4]
-	subs	r3, r3, #5
-	orrs	r3, r1
-	str	r3, [r4]
+	movs	r2, #32
+	ldr	r3, .L268+28
+	ldr	r0, [r3, #32]
+	orrs	r2, r0
+	str	r2, [r3, #32]
+	ldr	r2, .L268+32
+	ldr	r0, .L268+36
+	str	r2, [r4]
+	ldr	r2, [r4]
+	ands	r2, r0
+	str	r2, [r4]
+	movs	r2, #128
+	ldr	r0, [r4]
+	lsls	r2, r2, #21
+	orrs	r2, r0
+	str	r2, [r4]
+	movs	r2, #128
+	lsls	r2, r2, #10
+	str	r2, [r4, #4]
+	movs	r2, #7
+	strb	r2, [r4, #12]
+	ldr	r0, [r4]
+	subs	r2, r2, #5
+	orrs	r2, r0
+	str	r2, [r4]
+	ldr	r2, .L268+24
+	str	r3, [r7, #8]
 	str	r2, [r7, #12]
 .L148:
 	ldr	r3, [r4, #28]
@@ -790,7 +801,7 @@ main:
 	bmi	.L148
 	movs	r2, #30
 	movs	r5, #2
-	ldr	r6, .L268+36
+	ldr	r6, .L268+40
 	ldr	r3, [r6, #4]
 	bics	r3, r2
 	orrs	r3, r5
@@ -798,33 +809,33 @@ main:
 	ldr	r3, [r7, #12]
 	str	r5, [r3, #8]
 	bl	gclk_sync
-	ldr	r3, .L268+40
+	ldr	r3, .L268+44
 	ldr	r2, [r7, #12]
 	str	r3, [r2, #4]
 	bl	gclk_sync
-	ldr	r3, .L268+44
+	ldr	r3, .L268+48
 	strh	r5, [r3, #36]
 	bl	dfll_sync
-	ldr	r3, .L268+48
-	ldr	r5, .L268+44
+	ldr	r3, .L268+52
+	ldr	r5, .L268+48
 	ldr	r3, [r3]
-	str	r6, [r7, #8]
+	str	r6, [r7, #4]
 	lsrs	r3, r3, #26
 	cmp	r3, #63
 	bne	.L149
 	subs	r3, r3, #32
 .L149:
-	ldr	r2, .L268+52
+	ldr	r2, .L268+56
 	lsls	r3, r3, #10
 	orrs	r3, r2
-	ldr	r2, .L268+56
+	ldr	r2, .L268+60
 	movs	r6, #2
 	str	r2, [r5, #44]
 	str	r3, [r5, #40]
 	movs	r3, #0
 	strh	r3, [r5, #36]
 	bl	dfll_sync
-	ldr	r3, .L268+60
+	ldr	r3, .L268+64
 	strh	r3, [r5, #36]
 	bl	dfll_sync
 	ldrh	r3, [r5, #36]
@@ -850,13 +861,13 @@ main:
 	str	r5, [r2, #8]
 	bl	gclk_sync
 	ldr	r2, [r7, #12]
-	ldr	r3, .L268+64
+	ldr	r3, .L268+68
 	str	r3, [r2, #4]
 	bl	gclk_sync
 	movs	r0, #192
-	ldr	r3, .L268+68
-	ldr	r2, .L268+72
-	ldr	r1, .L268+76
+	ldr	r3, .L268+72
+	ldr	r2, .L268+76
+	ldr	r1, .L268+80
 	str	r2, [r3, #4]
 	mov	ip, r2
 	ldr	r2, [r1, #32]
@@ -874,36 +885,38 @@ main:
 @ 0 "" 2
 	.thumb
 	.syntax unified
-	movs	r0, #1
-	movs	r6, #15
-	ldr	r5, .L268+80
-	ldrb	r2, [r5]
-	orrs	r2, r0
-	strb	r2, [r5]
-	ldr	r2, .L268+84
+	ldr	r0, .L268+84
+	adds	r5, r5, #1
+	ldrb	r2, [r0]
+	movs	r6, r5
+	orrs	r2, r5
+	strb	r2, [r0]
+	ldr	r2, .L268+88
+	adds	r5, r5, #14
+	ldrb	r0, [r2]
+	bics	r0, r5
+	strb	r0, [r2]
+	movs	r0, #3
 	ldrb	r5, [r2]
-	bics	r5, r6
-	strb	r5, [r2]
-	movs	r5, #3
-	ldrb	r6, [r2]
-	orrs	r5, r6
-	strb	r5, [r2]
-	ldr	r5, .L268+88
-	ldrb	r6, [r5]
+	orrs	r0, r5
+	ldr	r5, .L268+92
+	strb	r0, [r2]
+	ldrb	r0, [r5]
 	orrs	r0, r6
-	movs	r6, #15
 	strb	r0, [r5]
 	ldrb	r0, [r2]
-	ands	r0, r6
-	strb	r0, [r2]
+	adds	r6, r6, #14
+	ands	r6, r0
 	movs	r0, #48
+	strb	r6, [r2]
 	ldrb	r5, [r2]
 	orrs	r0, r5
 	strb	r0, [r2]
+	ldr	r2, [r7, #8]
+	ldr	r0, [r2, #32]
 	movs	r2, #4
-	ldr	r0, .L268+92
-	ldr	r5, [r0, #32]
-	orrs	r2, r5
+	orrs	r2, r0
+	ldr	r0, [r7, #8]
 	str	r2, [r0, #32]
 	ldr	r2, .L268+96
 	ldr	r0, [r7, #12]
@@ -987,19 +1000,19 @@ main:
 	ldrb	r6, [r5, #26]
 	uxtb	r6, r6
 	cmp	r6, #0
-	beq	.LCB1108
+	beq	.LCB1117
 	b	.L158	@long jump
-.LCB1108:
+.LCB1117:
 	bl	serial_is_rx_ready
 	cmp	r0, #0
-	bne	.LCB1111
+	bne	.LCB1120
 	b	.L158	@long jump
-.LCB1111:
+.LCB1120:
 	bl	serial_getc
 	cmp	r0, #35
-	beq	.LCB1114
+	beq	.LCB1123
 	b	.L158	@long jump
-.LCB1114:
+.LCB1123:
 	ldr	r3, .L268+116
 	movs	r2, #16
 	str	r3, [r5, #12]
@@ -1019,13 +1032,13 @@ main:
 	ldmia	r3!, {r0, r1}
 	stmia	r2!, {r0, r1}
 	mov	r2, ip
-	ldr	r3, [r7, #8]
+	ldr	r3, [r7, #4]
 	ldr	r3, [r3, #8]
 	lsls	r3, r3, #13
 	lsrs	r3, r3, #29
 	lsls	r3, r3, #2
 	ldr	r3, [r3, r2]
-	ldr	r2, [r7, #8]
+	ldr	r2, [r7, #4]
 	str	r3, [r5, #28]
 	ldr	r2, [r2, #8]
 	str	r6, [r5, #36]
@@ -1062,9 +1075,9 @@ main:
 	cmp	r3, #255
 	beq	.L162
 	cmp	r3, #35
-	beq	.LCB1186
+	beq	.LCB1195
 	b	.L163	@long jump
-.LCB1186:
+.LCB1195:
 	ldrb	r3, [r5, #8]
 	cmp	r3, #0
 	beq	.L164
@@ -1185,6 +1198,43 @@ main:
 	ldr	r2, [r5, #36]
 	strh	r3, [r2]
 	b	.L172
+.L269:
+	.align	2
+.L268:
+	.word	1090536448
+	.word	1090536507
+	.word	1107301376
+	.word	1090536534
+	.word	1090536535
+	.word	16407
+	.word	1073744896
+	.word	1073742848
+	.word	3145740
+	.word	-536870913
+	.word	1090535424
+	.word	65542
+	.word	1073743872
+	.word	8413220
+	.word	511
+	.word	470465408
+	.word	1316
+	.word	198400
+	.word	-536813552
+	.word	999
+	.word	-536810240
+	.word	1090536518
+	.word	1090536499
+	.word	1090536519
+	.word	16404
+	.word	1107298304
+	.word	1076953092
+	.word	-2518
+	.word	.LANCHOR0
+	.word	.LANCHOR1
+	.word	.LANCHOR0+41
+	.word	.LC15
+	.word	.LANCHOR2
+	.word	.LC35
 .L175:
 	cmp	r3, #87
 	bne	.L176
@@ -1200,43 +1250,6 @@ main:
 .L263:
 	bl	sam_ba_putdata_term
 	b	.L172
-.L269:
-	.align	2
-.L268:
-	.word	1090536448
-	.word	1090536507
-	.word	1107301376
-	.word	1090536534
-	.word	1090536535
-	.word	16407
-	.word	1073744896
-	.word	-536870913
-	.word	3145740
-	.word	1090535424
-	.word	65542
-	.word	1073743872
-	.word	8413220
-	.word	511
-	.word	470465408
-	.word	1316
-	.word	198400
-	.word	-536813552
-	.word	999
-	.word	-536810240
-	.word	1090536518
-	.word	1090536499
-	.word	1090536519
-	.word	1073742848
-	.word	16404
-	.word	1107298304
-	.word	1076953092
-	.word	-2518
-	.word	.LANCHOR0
-	.word	.LANCHOR1
-	.word	.LANCHOR0+41
-	.word	.LC15
-	.word	.LANCHOR2
-	.word	.LC35
 .L177:
 	cmp	r3, #104
 	bne	.L178
@@ -1299,9 +1312,9 @@ main:
 	.syntax unified
 	ldrb	r3, [r5, #27]
 	cmp	r3, #0
-	bne	.LCB1432
+	bne	.LCB1441
 	b	.L172	@long jump
-.LCB1432:
+.LCB1441:
 	ldr	r3, [r5, #12]
 	movs	r0, #6
 	ldr	r3, [r3]
@@ -1516,9 +1529,9 @@ main:
 	b	.L200
 .L195:
 	cmp	r3, #90
-	beq	.LCB1700
+	beq	.LCB1709
 	b	.L172	@long jump
-.LCB1700:
+.LCB1709:
 	movs	r4, #0
 	ldr	r3, [r5, #36]
 	ldr	r2, [r5, #120]
@@ -1618,9 +1631,9 @@ main:
 .L158:
 	ldrb	r3, [r5, #20]
 	cmp	r3, #0
-	bne	.LCB1833
+	bne	.LCB1842
 	b	.L218	@long jump
-.LCB1833:
+.LCB1842:
 	movs	r3, #0
 	movs	r0, #170
 	strb	r3, [r5, #20]

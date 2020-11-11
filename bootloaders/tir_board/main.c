@@ -181,8 +181,10 @@ int main(void)
 
   // Enable SERCOM3 as SPI to FPGA
   PORT->Group[0].PMUX[11].reg = 0x22;    // Peripherial MUX for PA22 and PA23
-  PORT->Group[0].PINCFG[22].reg = 0x01;  // Enable peripherial pin
-  PORT->Group[0].PINCFG[23].reg = 0x01;  // Enable peripherial pin
+  PORT->Group[0].PINCFG[22].bit.PMUXEN = 1;  // Enable peripherial pin
+  PORT->Group[0].PINCFG[23].bit.PMUXEN = 1;  // Enable peripherial pin
+
+
 
   //Setting the Software Reset bit to 1
   SERCOM3->SPI.CTRLA.bit.SWRST = 1;
@@ -190,9 +192,10 @@ int main(void)
   while(SERCOM3->SPI.CTRLA.bit.SWRST || SERCOM3->SPI.SYNCBUSY.bit.SWRST);
 
   // Enable clock to SERCOM3
-  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID( 0x17U ) | // Generic Clock 0 (SERCOMx)
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID( GCLK_CLKCTRL_ID_SERCOM3_CORE_Val ) | // Generic Clock 0 (SERCOMx)
                       GCLK_CLKCTRL_GEN_GCLK0 | // Generic Clock Generator 0 is source
                       GCLK_CLKCTRL_CLKEN ;
+  PM->APBCMASK.reg |= PM_APBCMASK_SERCOM3;
 
   SERCOM3->SPI.CTRLA.reg = SERCOM_SPI_CTRLA_MODE_SPI_MASTER |
                            SERCOM_SPI_CTRLA_DOPO(0) |
