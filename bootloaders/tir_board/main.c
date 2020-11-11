@@ -37,7 +37,6 @@ extern void board_init(void);
 volatile bool jump_on_timeout = false;
 volatile bool start_fpga_config = false;
 volatile bool config_done = false;
-volatile uint32_t flashdata;
 volatile uint16_t jump_cnt = 0;
 
 volatile uint32_t* pulSketch_Start_Address;
@@ -243,20 +242,24 @@ uint8_t sendFlashByte(uint8_t sendByte)
       return SERCOM1->SPI.DATA.reg;
 }
 
-void readFlash(uint32_t address)
+uint32_t readFlash(uint32_t address)
 {
+  uint32_t readdata;
+
   PORT->Group[0].OUTCLR.reg = 1 << 18;
 
   sendFlashByte(0x03);
   sendFlashByte((address >> 16) & 0xFF);
   sendFlashByte((address >>  8) & 0xFF);
   sendFlashByte((address >>  0) & 0xFF);
-  flashdata = sendFlashByte(0xFF);
-  flashdata = (flashdata << 8) | sendFlashByte(0xFF);
-  flashdata = (flashdata << 8) | sendFlashByte(0xFF);
-  flashdata = (flashdata << 8) | sendFlashByte(0xFF);
+  readdata = sendFlashByte(0xFF);
+  readdata = (readdata << 8) | sendFlashByte(0xFF);
+  readdata = (readdata << 8) | sendFlashByte(0xFF);
+  readdata = (readdata << 8) | sendFlashByte(0xFF);
 
   PORT->Group[0].OUTSET.reg = 1 << 18;  // Set pin HIGH
+
+  return readdata;
 }
 
 void sendFPGAByte(uint8_t sendByte)
@@ -269,6 +272,7 @@ void configureFPGA()
 {
   uint16_t tick_sample;
   uint32_t i;
+  uint32_t flashdata;
 
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
   PORT->Group[0].DIRSET.reg = 1 << 28;  // Set pin PA28 as output
@@ -284,7 +288,7 @@ void configureFPGA()
   // Shift out bits
   for (i=0;i<127714;i++)
   {
-    readFlash(i*4);
+    flashdata = readFlash(i*4);
     sendFPGAByte((flashdata >> 24) & 0xFF);
     sendFPGAByte((flashdata >> 16) & 0xFF);
     sendFPGAByte((flashdata >> 8) & 0xFF);
@@ -407,11 +411,6 @@ int main(void)
       // check_start_application();
       jump_on_timeout = false;
       jump_on_timeout = 0;
-      readFlash(0x20);
-      sendFPGAByte((flashdata >> 24) & 0xFF);
-      sendFPGAByte((flashdata >> 16) & 0xFF);
-      sendFPGAByte((flashdata >> 8) & 0xFF);
-      sendFPGAByte(flashdata & 0xFF);
     }
 
     if (start_fpga_config && !config_done)

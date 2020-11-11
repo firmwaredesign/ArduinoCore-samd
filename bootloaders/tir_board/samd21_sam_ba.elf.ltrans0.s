@@ -1161,7 +1161,7 @@ main:
 	movs	r2, #122
 	adds	r3, r3, #44
 	strb	r2, [r3]
-.L237:
+.L238:
 	ldr	r3, [r4, #12]
 	movs	r1, #64
 	ldr	r3, [r3, #16]
@@ -1181,7 +1181,7 @@ main:
 	ldr	r3, [r4, #120]
 	ldr	r2, [r4, #112]
 	cmp	r3, r2
-	bcs	.L237
+	bcs	.L238
 	ldr	r3, [r4, #116]
 	ldrb	r3, [r3]
 	cmp	r3, #255
@@ -1514,19 +1514,16 @@ main:
 	mov	ip, r0
 	ldr	r1, .L300+24
 	str	r3, [r4, #120]
-	str	r1, [r4, #116]
 .L206:
-	adds	r6, r3, #1
 	ldr	r0, .L300+28
-	str	r6, [r7, #12]
-	ldrb	r6, [r1, r3]
-	adds	r0, r0, r3
+	ldrb	r6, [r1, r2]
+	adds	r0, r0, r2
 	cmp	r6, #0
-	bne	.L243
-	cmp	r2, #0
-	beq	.L207
-	str	r3, [r4, #120]
-.L207:
+	bne	.L207
+	cmp	r3, #0
+	beq	.L208
+	str	r2, [r4, #120]
+.L208:
 	ldr	r3, [r4, #12]
 	str	r0, [r4, #116]
 	ldr	r2, [r4, #120]
@@ -1542,70 +1539,70 @@ main:
 	ldr	r1, .L300+32
 	str	r3, [r4, #120]
 	adds	r6, r1, #1
-.L208:
+.L209:
 	ldrb	r5, [r1, r2]
 	adds	r0, r6, r2
 	cmp	r5, #0
-	bne	.L209
+	bne	.L210
 	cmp	r3, #0
-	beq	.L210
+	beq	.L211
 	str	r2, [r4, #120]
-.L210:
+.L211:
 	ldr	r3, [r4, #12]
 	str	r0, [r4, #116]
 	ldr	r2, [r4, #120]
 	ldr	r0, [r3, #12]
 	bl	sam_ba_putdata.isra.0
 	b	.L296
-.L243:
-	ldr	r3, [r7, #12]
-	mov	r2, ip
+.L207:
+	adds	r2, r2, #1
+	mov	r3, ip
 	b	.L206
-.L209:
+.L210:
 	adds	r2, r2, #1
 	movs	r3, #1
-	b	.L208
+	b	.L209
 .L205:
 	cmp	r3, #88
-	bne	.L211
+	bne	.L212
 	ldr	r2, [r4, #32]
 	ldr	r3, [r4, #124]
 	ldr	r0, [r4, #36]
 	ldr	r1, .L300+36
 	ldr	r5, .L300+40
 	lsls	r2, r2, #2
-.L212:
+.L213:
 	cmp	r3, r0
-	bcc	.L214
+	bcc	.L215
 	ldr	r3, [r4, #12]
 	movs	r2, #3
 	ldr	r1, .L300+44
 	b	.L293
-.L214:
+.L215:
 	lsrs	r6, r3, #1
 	str	r6, [r1, #28]
 	strh	r5, [r1]
-.L213:
+.L214:
 	ldrb	r6, [r1, #20]
 	lsls	r6, r6, #31
-	bpl	.L213
+	bpl	.L214
 	adds	r3, r3, r2
-	b	.L212
-.L211:
+	b	.L213
+.L212:
 	cmp	r3, #89
-	bne	.L215
+	bne	.L216
 	ldr	r2, [r4, #124]
 	ldr	r0, [r4, #40]
 	ldr	r3, .L300+4
 	cmp	r2, #0
-	bne	.L216
+	bne	.L217
 	str	r0, [r3, #12]
-.L217:
+.L218:
 	ldr	r3, [r4, #12]
 	movs	r2, #3
 	ldr	r1, .L300+48
 	b	.L293
-.L216:
+.L217:
 	movs	r5, #128
 	ldr	r3, [r3, #12]
 	lsrs	r2, r2, #2
@@ -1619,62 +1616,62 @@ main:
 	str	r1, [r7, #4]
 	ldr	r1, .L300+52
 	mov	ip, r1
-.L218:
+.L219:
 	cmp	r2, #0
-	beq	.L217
+	beq	.L218
 	ldr	r1, .L300+56
 	strh	r1, [r3]
-.L219:
+.L220:
 	ldrb	r1, [r3, #20]
 	lsls	r1, r1, #31
-	bpl	.L219
+	bpl	.L220
 	movs	r1, #0
 	ldr	r6, [r7, #8]
 	str	r0, [r7, #12]
-.L220:
+.L221:
 	ldr	r5, [r7, #4]
 	ldr	r0, [r7, #12]
 	str	r6, [r7, #8]
 	cmp	r1, r5
-	beq	.L221
+	beq	.L222
 	cmp	r1, r2
-	bne	.L222
-.L221:
+	bne	.L223
+.L222:
 	mov	r5, ip
 	strh	r5, [r3]
-.L223:
+.L224:
 	ldrb	r5, [r3, #20]
 	lsls	r5, r5, #31
-	bpl	.L223
+	bpl	.L224
 	subs	r2, r2, r1
-	b	.L218
-.L222:
+	b	.L219
+.L223:
 	ldr	r5, [r7, #12]
 	ldmia	r6!, {r0}
 	adds	r1, r1, #1
 	stmia	r5!, {r0}
 	str	r5, [r7, #12]
-	b	.L220
-.L215:
+	b	.L221
+.L216:
 	cmp	r3, #90
-	beq	.LCB1860
+	beq	.LCB1857
 	b	.L192	@long jump
-.LCB1860:
+.LCB1857:
 	movs	r5, #0
 	ldr	r3, [r4, #40]
 	ldr	r2, [r4, #124]
 	ldr	r0, .L300+60
 	adds	r1, r3, r2
-.L226:
-	cmp	r1, r3
-	bne	.L227
+.L227:
+	cmp	r3, r1
+	bne	.L228
 	ldr	r3, [r4, #12]
 	movs	r2, #1
 	ldr	r0, [r3, #12]
 	ldr	r1, .L300+64
 	bl	sam_ba_putdata.isra.0
 	movs	r3, #7
-.L230:
+.L231:
 	movs	r2, #15
 	ands	r2, r5
 	uxtb	r0, r2
@@ -1682,14 +1679,14 @@ main:
 	lsrs	r5, r5, #4
 	adds	r1, r1, #48
 	cmp	r2, #9
-	ble	.L229
+	ble	.L230
 	adds	r1, r1, #7
-.L229:
+.L230:
 	movs	r2, #16
 	adds	r2, r7, r2
 	strb	r1, [r2, r3]
 	subs	r3, r3, #1
-	bcs	.L230
+	bcs	.L231
 	movs	r1, #16
 	ldr	r5, .L300+68
 	movs	r2, #8
@@ -1701,7 +1698,7 @@ main:
 	movs	r2, #3
 	ldr	r1, .L300+72
 	b	.L293
-.L227:
+.L228:
 	ldrb	r6, [r3]
 	lsrs	r2, r5, #8
 	eors	r2, r6
@@ -1711,47 +1708,47 @@ main:
 	eors	r5, r2
 	uxth	r5, r5
 	adds	r3, r3, #1
-	b	.L226
+	b	.L227
 .L183:
 	movs	r2, r3
 	subs	r2, r2, #48
 	uxtb	r1, r2
 	cmp	r1, #9
-	bhi	.L232
+	bhi	.L233
 	ldr	r3, [r4, #124]
 	lsls	r3, r3, #4
 .L294:
 	orrs	r3, r2
 	str	r3, [r4, #124]
 	b	.L182
-.L232:
+.L233:
 	movs	r2, r3
 	subs	r2, r2, #65
 	cmp	r2, #5
-	bhi	.L233
+	bhi	.L234
 	ldr	r2, [r4, #124]
 	subs	r3, r3, #55
 	lsls	r2, r2, #4
 	b	.L294
-.L233:
+.L234:
 	movs	r2, r3
 	subs	r2, r2, #97
 	cmp	r2, #5
-	bhi	.L234
+	bhi	.L235
 	ldr	r2, [r4, #124]
 	subs	r3, r3, #87
 	lsls	r2, r2, #4
 	b	.L294
-.L234:
+.L235:
 	movs	r2, #0
 	cmp	r3, #44
-	bne	.L235
+	bne	.L236
 	ldr	r3, [r4, #124]
 	str	r3, [r4, #40]
 .L295:
 	str	r2, [r4, #124]
 	b	.L182
-.L235:
+.L236:
 	movs	r1, r4
 	adds	r1, r1, #44
 	strb	r3, [r1]
@@ -1781,18 +1778,18 @@ main:
 .L178:
 	ldrb	r3, [r4, #20]
 	cmp	r3, #0
-	bne	.LCB2017
+	bne	.LCB2014
 	b	.L177	@long jump
-.LCB2017:
-	ldr	r5, .L302
-	ldrb	r3, [r5, #16]
-	cmp	r3, #0
-	beq	.LCB2022
+.LCB2014:
+	ldr	r3, .L302
+	ldrb	r2, [r3, #16]
+	cmp	r2, #0
+	beq	.LCB2019
 	b	.L177	@long jump
-.LCB2022:
+.LCB2019:
+	adds	r2, r2, #1
+	strb	r2, [r3, #16]
 	movs	r2, #128
-	adds	r3, r3, #1
-	strb	r3, [r5, #16]
 	ldr	r3, .L302+4
 	lsls	r2, r2, #21
 	str	r2, [r3, #24]
@@ -1801,22 +1798,22 @@ main:
 	ldrh	r2, [r4, #18]
 	ldr	r1, .L302+8
 	adds	r2, r2, r1
-.L239:
+.L240:
 	ldrh	r1, [r4, #18]
 	cmp	r2, r1
-	bge	.L239
+	bge	.L240
 	movs	r2, #128
 	lsls	r2, r2, #21
 	str	r2, [r3, #24]
 	ldrh	r3, [r4, #18]
 	ldr	r2, .L302+12
 	adds	r3, r3, r2
-.L240:
+.L241:
 	ldrh	r2, [r4, #18]
 	cmp	r3, r2
-	bge	.L240
+	bge	.L241
 	movs	r6, #0
-.L241:
+.L242:
 	movs	r2, #128
 	ldr	r3, .L302+4
 	lsls	r2, r2, #11
@@ -1833,53 +1830,36 @@ main:
 	bl	sendFlashByte
 	movs	r0, #255
 	bl	sendFlashByte
-	str	r0, [r5, #20]
-	ldr	r1, [r5, #20]
+	lsls	r5, r0, #8
 	movs	r0, #255
-	str	r1, [r7, #12]
 	bl	sendFlashByte
-	ldr	r1, [r7, #12]
-	adds	r6, r6, #4
-	lsls	r1, r1, #8
-	orrs	r0, r1
-	str	r0, [r5, #20]
-	ldr	r1, [r5, #20]
+	orrs	r5, r0
 	movs	r0, #255
-	str	r1, [r7, #12]
 	bl	sendFlashByte
-	ldr	r1, [r7, #12]
-	lsls	r1, r1, #8
-	orrs	r0, r1
-	str	r0, [r5, #20]
-	ldr	r1, [r5, #20]
+	lsls	r5, r5, #8
+	orrs	r5, r0
 	movs	r0, #255
-	str	r1, [r7, #12]
 	bl	sendFlashByte
 	movs	r2, #128
-	ldr	r1, [r7, #12]
 	ldr	r3, .L302+4
-	lsls	r1, r1, #8
-	orrs	r0, r1
+	lsls	r5, r5, #8
 	lsls	r2, r2, #11
-	str	r0, [r5, #20]
+	orrs	r5, r0
 	str	r2, [r3, #24]
-	ldr	r0, [r5, #20]
-	lsrs	r0, r0, #24
+	lsrs	r0, r5, #24
 	bl	sendFPGAByte
-	ldr	r0, [r5, #20]
-	lsrs	r0, r0, #16
+	lsrs	r0, r5, #16
 	uxtb	r0, r0
 	bl	sendFPGAByte
-	ldr	r0, [r5, #20]
-	lsrs	r0, r0, #8
+	lsrs	r0, r5, #8
 	uxtb	r0, r0
 	bl	sendFPGAByte
-	ldr	r0, [r5, #20]
-	uxtb	r0, r0
+	uxtb	r0, r5
 	bl	sendFPGAByte
 	ldr	r3, .L302+16
+	adds	r6, r6, #4
 	cmp	r6, r3
-	bne	.L241
+	bne	.L242
 	b	.L177
 .L303:
 	.align	2
@@ -2380,11 +2360,6 @@ src_buff_addr.11917:
 	.size	config_done, 1
 config_done:
 	.space	1
-	.space	3
-	.type	flashdata, %object
-	.size	flashdata, 4
-flashdata:
-	.space	4
 	.type	ledKeepValue, %object
 	.size	ledKeepValue, 1
 ledKeepValue:
@@ -2396,7 +2371,6 @@ bmRequestType.10443:
 	.type	bRequest.10444, %object
 	.size	bRequest.10444, 1
 bRequest.10444:
-	.space	1
 	.space	1
 	.type	wValue.10446, %object
 	.size	wValue.10446, 2
