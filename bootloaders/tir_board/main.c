@@ -32,6 +32,7 @@
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
+#define BOOTLOADER_FLASH_START 0x100000
 #define BOOTLOADER_WAIT_TIME_MS 9600  // 200ms ( * 48)
 #define FPGA_CONFIG_STARTTIME_MS 4800 // 100ms
 volatile bool jump_on_timeout = false;
@@ -273,6 +274,7 @@ void configureFPGA()
   uint16_t tick_sample;
   uint32_t i;
   uint32_t flashdata;
+  uint32_t image_words;
 
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
   PORT->Group[0].DIRSET.reg = 1 << 28;  // Set pin PA28 as output
@@ -285,15 +287,35 @@ void configureFPGA()
   tick_sample = jump_cnt;
   while (jump_cnt < (tick_sample + 9600));  // Wait 200 ms
 
+  image_words = readFlash(BOOTLOADER_FLASH_START);
+  image_words = (image_words + 3) >> 2;   // convert (ceil) from bytes to words
+
   // Shift out bits
-  for (i=0;i<127714;i++)
+  for (i=0;i<image_words;i++)
   {
-    flashdata = readFlash(i*4);
+    flashdata = readFlash(BOOTLOADER_FLASH_START + i*4 + 4);
     sendFPGAByte((flashdata >> 24) & 0xFF);
     sendFPGAByte((flashdata >> 16) & 0xFF);
     sendFPGAByte((flashdata >> 8) & 0xFF);
     sendFPGAByte(flashdata & 0xFF);
   }
+}
+
+void disconnectFlashSPI()
+{
+  // Set all SPI pins as input
+  PORT->Group[0].DIRCLR.reg = 1 << 16;  // Set pin PA18 as input
+  PORT->Group[0].DIRCLR.reg = 1 << 17;  // Set pin PA18 as input
+  PORT->Group[0].DIRCLR.reg = 1 << 18;  // Set pin PA18 as input
+  PORT->Group[0].DIRCLR.reg = 1 << 19;  // Set pin PA18 as input
+
+  // Enable SERCOM1 as SPI to Flash
+  PORT->Group[0].PMUX[8].reg = 0x00;    // I/O MUX for PA17 and PA16
+  PORT->Group[0].PMUX[9].reg = 0x00;    // I/O MUX for PA19 and PA18
+  PORT->Group[0].PINCFG[16].bit.PMUXEN = 1;  // Disable peripherial pin
+  PORT->Group[0].PINCFG[17].bit.PMUXEN = 1;  // Disable peripherial pin
+  PORT->Group[0].PINCFG[18].bit.PMUXEN = 1;  // Disable peripherial pin
+  PORT->Group[0].PINCFG[19].bit.PMUXEN = 1;  // Disable peripherial pin
 }
 
 /**
@@ -417,6 +439,7 @@ int main(void)
     {
       config_done = true;
       configureFPGA();
+      disconnectFlashSPI();
     }
 
   }
