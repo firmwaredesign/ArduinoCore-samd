@@ -33,7 +33,7 @@ extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
 #define BOOTLOADER_FLASH_START 0x100000
-#define BOOTLOADER_WAIT_TIME_MS 9600  // 200ms ( * 48)
+#define BOOTLOADER_WAIT_TIME_MS 576000  // 12000ms ( * 48)
 volatile bool jump_on_timeout = false;
 volatile uint32_t ticks_cnt = 0;
 
@@ -276,13 +276,19 @@ void configureFPGA()
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
   PORT->Group[0].DIRSET.reg = 1 << 28;  // Set pin PA28 as output
 
+  // Enable the input mode in BOOT_N GPIO Pin (PA03)
+  PORT->Group[0].DIRCLR.reg = 1 << 3;
+  PORT->Group[0].PINCFG[3].bit.PMUXEN = 1;  // Disable peripherial pin
+  PORT->Group[0].PINCFG[3].reg = PORT_PINCFG_INEN | PORT_PINCFG_PULLEN;
+  PORT->Group[0].OUTSET.reg = 1 << 3;
+
   // Wait some time before configure FPGA
   // Avoids problem with verify after uploading new bootloader to MCU
   tick_sample = ticks_cnt;
   while (ticks_cnt < (tick_sample + 9600));  // Wait 200 ms
 
   // Reset FPGA
-  PORT->Group[0].OUTCLR.reg = 1 << 28;  // CONFIG_N = low
+//  PORT->Group[0].OUTCLR.reg = 1 << 28;  // CONFIG_N = low
   tick_sample = ticks_cnt;
   while (ticks_cnt < (tick_sample + 4800));  // Wait 100 ms
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
@@ -326,7 +332,7 @@ void disconnectFlashSPI()
  */
 int main(void)
 {
-
+  uint32_t boot_n_pin;
 
   // TR: Set IRQ1_N pin low to signal in bootloader
   PORT->Group[0].DIRSET.reg = 1;  // Set pin PA00 as output
@@ -395,11 +401,13 @@ int main(void)
   configureFPGA();
   disconnectFlashSPI();
   
-  ticks_cnt = 0;
-
   /* Wait for a complete enum on usb or a '#' char on serial line */
   while (1)
   {
+
+    // Read the BOOT_N pin
+    boot_n_pin = PORT->Group[0].IN.reg & 0x8;   // Mask pin PA03 only
+
 
     /* Check if a '#' has been received */
     if (!main_b_cdc_enable && serial_sharp_received())
@@ -412,7 +420,7 @@ int main(void)
       }
     }
 
-    if (jump_on_timeout)
+    if (jump_on_timeout && (boot_n_pin != 0))
     {
       jump_on_timeout = false;
       check_start_application();
