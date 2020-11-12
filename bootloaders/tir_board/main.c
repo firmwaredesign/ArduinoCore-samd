@@ -35,7 +35,7 @@ extern void board_init(void);
 #define BOOTLOADER_FLASH_START 0x100000
 #define BOOTLOADER_WAIT_TIME_MS 9600  // 200ms ( * 48)
 volatile bool jump_on_timeout = false;
-volatile uint16_t jump_cnt = 0;
+volatile uint32_t ticks_cnt = 0;
 
 volatile uint32_t* pulSketch_Start_Address;
 
@@ -268,7 +268,7 @@ void sendFPGAByte(uint8_t sendByte)
 
 void configureFPGA()
 {
-  uint16_t tick_sample;
+  uint32_t tick_sample;
   uint32_t i;
   uint32_t flashdata;
   uint32_t image_words;
@@ -276,13 +276,18 @@ void configureFPGA()
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
   PORT->Group[0].DIRSET.reg = 1 << 28;  // Set pin PA28 as output
 
+  // Wait some time before configure FPGA
+  // Avoids problem with verify after uploading new bootloader to MCU
+  tick_sample = ticks_cnt;
+  while (ticks_cnt < (tick_sample + 9600));  // Wait 200 ms
+
   // Reset FPGA
   PORT->Group[0].OUTCLR.reg = 1 << 28;  // CONFIG_N = low
-  tick_sample = jump_cnt;
-  while (jump_cnt < (tick_sample + 4800));  // Wait 100 ms
+  tick_sample = ticks_cnt;
+  while (ticks_cnt < (tick_sample + 4800));  // Wait 100 ms
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
-  tick_sample = jump_cnt;
-  while (jump_cnt < (tick_sample + 9600));  // Wait 200 ms
+  tick_sample = ticks_cnt;
+  while (ticks_cnt < (tick_sample + 9600));  // Wait 200 ms
 
   image_words = readFlash(BOOTLOADER_FLASH_START);
   image_words = (image_words + 3) >> 2;   // convert (ceil) from bytes to words
@@ -389,6 +394,8 @@ int main(void)
 
   configureFPGA();
   disconnectFlashSPI();
+  
+  ticks_cnt = 0;
 
   /* Wait for a complete enum on usb or a '#' char on serial line */
   while (1)
@@ -405,12 +412,10 @@ int main(void)
       }
     }
 
-//    if (jump_on_timeout)
-    if (1==0)
+    if (jump_on_timeout)
     {
-      // check_start_application();
       jump_on_timeout = false;
-      jump_on_timeout = 0;
+      check_start_application();
     }
 
   }
@@ -421,8 +426,8 @@ void SysTick_Handler(void)
   //LED_pulse();
 
   sam_ba_monitor_sys_tick();
-  jump_cnt++;
-  if (jump_cnt == BOOTLOADER_WAIT_TIME_MS)
+  ticks_cnt++;
+  if (ticks_cnt == BOOTLOADER_WAIT_TIME_MS)
   {
     jump_on_timeout = true;
   }
