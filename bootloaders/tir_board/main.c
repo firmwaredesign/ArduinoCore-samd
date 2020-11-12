@@ -34,10 +34,7 @@ extern void board_init(void);
 
 #define BOOTLOADER_FLASH_START 0x100000
 #define BOOTLOADER_WAIT_TIME_MS 9600  // 200ms ( * 48)
-#define FPGA_CONFIG_STARTTIME_MS 4800 // 100ms
 volatile bool jump_on_timeout = false;
-volatile bool start_fpga_config = false;
-volatile bool config_done = false;
 volatile uint16_t jump_cnt = 0;
 
 volatile uint32_t* pulSketch_Start_Address;
@@ -390,30 +387,13 @@ int main(void)
   /* Start the sys tick (1 ms) */
   SysTick_Config(1000);
 
-  // configureFPGA();
+  configureFPGA();
+  disconnectFlashSPI();
 
   /* Wait for a complete enum on usb or a '#' char on serial line */
   while (1)
   {
-#if defined(SAM_BA_USBCDC_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
-    if (pCdc->IsConfigured(pCdc) != 0)
-    {
-      main_b_cdc_enable = true;
-    }
 
-    /* Check if a USB enumeration has succeeded and if comm port has been opened */
-    if (main_b_cdc_enable)
-    {
-      sam_ba_monitor_init(SAM_BA_INTERFACE_USBCDC);
-      /* SAM-BA on USB loop */
-      while( 1 )
-      {
-        sam_ba_monitor_run();
-      }
-    }
-#endif
-
-#if defined(SAM_BA_UART_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
     /* Check if a '#' has been received */
     if (!main_b_cdc_enable && serial_sharp_received())
     {
@@ -424,8 +404,6 @@ int main(void)
         sam_ba_monitor_run();
       }
     }
-    // serial_putc(0x41);
-#endif
 
 //    if (jump_on_timeout)
     if (1==0)
@@ -433,13 +411,6 @@ int main(void)
       // check_start_application();
       jump_on_timeout = false;
       jump_on_timeout = 0;
-    }
-
-    if (start_fpga_config && !config_done)
-    {
-      config_done = true;
-      configureFPGA();
-      disconnectFlashSPI();
     }
 
   }
@@ -450,10 +421,6 @@ void SysTick_Handler(void)
   //LED_pulse();
 
   sam_ba_monitor_sys_tick();
-  if (jump_cnt == FPGA_CONFIG_STARTTIME_MS)
-  {
-    start_fpga_config = true;
-  }
   jump_cnt++;
   if (jump_cnt == BOOTLOADER_WAIT_TIME_MS)
   {
