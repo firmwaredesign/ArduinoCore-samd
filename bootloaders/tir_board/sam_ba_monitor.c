@@ -332,7 +332,7 @@ static void sam_ba_monitor_loop(void)
       }
       else if (command == 'W')
       {
-        *((int *) ptr_data) = current_number;
+        *((uint32_t *) ptr_data) = current_number;
       }
       else if (command == 'o')
       {

@@ -431,7 +431,7 @@ int main(void)
     if (jump_on_timeout && (boot_n_pin != 0))
     {
       jump_on_timeout = false;
-      check_start_application();
+      //check_start_application();
     }
 
   }
