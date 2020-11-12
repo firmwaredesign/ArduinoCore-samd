@@ -29,6 +29,8 @@
 #include "sam_ba_usb.h"
 #include "sam_ba_cdc.h"
 
+volatile bool upload_fpga = false;
+
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
@@ -200,15 +202,18 @@ void initFPGASPI()
 
 void initFlashSPI()
 {
-  PORT->Group[0].OUTSET.reg = 1 << 18;  // Set pin HIGH
-  PORT->Group[0].DIRSET.reg = 1 << 18;  // Set pin PA18 as output
+  if (upload_fpga)
+  {
+    PORT->Group[0].OUTSET.reg = 1 << 18;  // Set pin HIGH
+    PORT->Group[0].DIRSET.reg = 1 << 18;  // Set pin PA18 as output
 
-  // Enable SERCOM1 as SPI to Flash
-  PORT->Group[0].PMUX[8].reg = 0x22;    // Peripherial MUX for PA17 and PA16
-  PORT->Group[0].PMUX[9].reg = 0x20;    // Peripherial MUX for PA19 and PA18
-  PORT->Group[0].PINCFG[16].bit.PMUXEN = 1;  // Enable peripherial pin
-  PORT->Group[0].PINCFG[17].bit.PMUXEN = 1;  // Enable peripherial pin
-  PORT->Group[0].PINCFG[19].bit.PMUXEN = 1;  // Enable peripherial pin
+    // Enable SERCOM1 as SPI to Flash
+    PORT->Group[0].PMUX[8].reg = 0x22;    // Peripherial MUX for PA17 and PA16
+    PORT->Group[0].PMUX[9].reg = 0x20;    // Peripherial MUX for PA19 and PA18
+    PORT->Group[0].PINCFG[16].bit.PMUXEN = 1;  // Enable peripherial pin
+    PORT->Group[0].PINCFG[17].bit.PMUXEN = 1;  // Enable peripherial pin
+    PORT->Group[0].PINCFG[19].bit.PMUXEN = 1;  // Enable peripherial pin
+  }
 
   //Setting the Software Reset bit to 1
   SERCOM1->SPI.CTRLA.bit.SWRST = 1;
@@ -288,7 +293,10 @@ void configureFPGA()
   while (ticks_cnt < (tick_sample + 9600));  // Wait 200 ms
 
   // Reset FPGA
-//  PORT->Group[0].OUTCLR.reg = 1 << 28;  // CONFIG_N = low
+  if (upload_fpga)
+  {
+    PORT->Group[0].OUTCLR.reg = 1 << 28;  // CONFIG_N = low
+  }
   tick_sample = ticks_cnt;
   while (ticks_cnt < (tick_sample + 4800));  // Wait 100 ms
   PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
