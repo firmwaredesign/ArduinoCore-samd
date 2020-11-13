@@ -29,7 +29,8 @@
 #include "sam_ba_usb.h"
 #include "sam_ba_cdc.h"
 
-volatile bool upload_fpga = true;
+volatile bool upload_fpga = true;        // SHOULD BE true
+volatile bool stay_in_bootloader = false;  // SHOULD BE false
 
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
@@ -436,7 +437,7 @@ int main(void)
       }
     }
 
-    if (jump_to_app_now && (boot_n_pin != 0))
+    if (jump_to_app_now && (boot_n_pin != 0) && !stay_in_bootloader)
     {
       jump_to_app_now = false;
       check_start_application();
