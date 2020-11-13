@@ -29,14 +29,14 @@
 #include "sam_ba_usb.h"
 #include "sam_ba_cdc.h"
 
-volatile bool upload_fpga = false;
+volatile bool upload_fpga = true;
 
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
 #define BOOTLOADER_FLASH_START 0x100000
 #define BOOTLOADER_WAIT_TIME_MS 576000  // 12000ms ( * 48)
-volatile bool jump_on_timeout = false;
+volatile bool jump_to_app_now = false;
 volatile uint32_t ticks_cnt = 0;
 
 volatile uint32_t* pulSketch_Start_Address;
@@ -408,6 +408,14 @@ int main(void)
 
   configureFPGA();
   disconnectFlashSPI();
+
+  // Clear Serial buffer
+  // We get a lot of garbage when configuring FPGA
+  while(serial_is_rx_ready())
+  {
+		serial_getc();
+	}
+
   
   /* Wait for a complete enum on usb or a '#' char on serial line */
   while (1)
@@ -418,7 +426,7 @@ int main(void)
 
 
     /* Check if a '#' has been received */
-    if (!main_b_cdc_enable && serial_sharp_received())
+    if (!main_b_cdc_enable && serial_sharp_received() && (boot_n_pin == 0))
     {
       sam_ba_monitor_init(SAM_BA_INTERFACE_USART);
       /* SAM-BA on Serial loop */
@@ -428,10 +436,10 @@ int main(void)
       }
     }
 
-    if (jump_on_timeout && (boot_n_pin != 0))
+    if (jump_to_app_now && (boot_n_pin != 0))
     {
-      jump_on_timeout = false;
-      //check_start_application();
+      jump_to_app_now = false;
+      check_start_application();
     }
 
   }
@@ -445,6 +453,6 @@ void SysTick_Handler(void)
   ticks_cnt++;
   if (ticks_cnt == BOOTLOADER_WAIT_TIME_MS)
   {
-    jump_on_timeout = true;
+    jump_to_app_now = true;
   }
 }
