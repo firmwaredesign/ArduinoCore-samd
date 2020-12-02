@@ -36,7 +36,7 @@ extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
 #define BOOTLOADER_FLASH_START 0x100000
-#define BOOTLOADER_WAIT_TIME_MS 576000  // 12000ms ( * 48)
+#define BOOTLOADER_WAIT_TIME_MS 192000  // 4000ms ( * 48)
 volatile bool jump_to_app_now = false;
 volatile uint32_t ticks_cnt = 0;
 
@@ -195,7 +195,7 @@ void initFPGASPI()
   SERCOM3->SPI.CTRLA.bit.CPOL = 0;
   SERCOM3->SPI.CTRLA.bit.CPHA = 0;
   SERCOM3->SPI.CTRLB.reg = SERCOM_SPI_CTRLB_RXEN;	//Active the SPI receiver.  
-  SERCOM3->SPI.BAUD.reg = 7;  // 3 MHz SPI
+  SERCOM3->SPI.BAUD.reg = 2;  // 8 MHz SPI
 
   SERCOM3->SPI.CTRLA.bit.ENABLE = 1;
   while(SERCOM3->SPI.SYNCBUSY.bit.ENABLE);
@@ -233,7 +233,7 @@ void initFlashSPI()
   SERCOM1->SPI.CTRLA.bit.CPOL = 1;
   SERCOM1->SPI.CTRLA.bit.CPHA = 1;
   SERCOM1->SPI.CTRLB.reg = SERCOM_SPI_CTRLB_RXEN;	//Active the SPI receiver.  
-  SERCOM1->SPI.BAUD.reg = 7;  // 3 MHz SPI
+  SERCOM1->SPI.BAUD.reg = 2;  // 8 MHz SPI
 
   SERCOM1->SPI.CTRLA.bit.ENABLE = 1;
   while(SERCOM1->SPI.SYNCBUSY.bit.ENABLE);
