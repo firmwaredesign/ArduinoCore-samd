@@ -272,6 +272,21 @@ void sendFPGAByte(uint8_t sendByte)
       while (SERCOM3->SPI.INTFLAG.bit.TXC == 0);  // Busy wait until SPI TX completed
 }
 
+void clearFPGA()
+{
+  uint32_t tick_sample;
+
+  PORT->Group[0].OUTCLR.reg = 1 << 28;  // CONFIG_N = low
+  PORT->Group[0].DIRSET.reg = 1 << 28;  // Set pin PA28 as output
+
+  tick_sample = ticks_cnt;
+  while (ticks_cnt < (tick_sample + 4800));  // Wait 100 ms
+
+  PORT->Group[0].OUTSET.reg = 1 << 28;  // Set CONFIG_N pin HIGH
+  PORT->Group[0].DIRCLR.reg = 1 << 28;
+
+}
+
 void configureFPGA()
 {
   uint32_t tick_sample;
@@ -440,6 +455,7 @@ int main(void)
     if (jump_to_app_now && (boot_n_pin != 0) && !stay_in_bootloader)
     {
       jump_to_app_now = false;
+      clearFPGA();
       check_start_application();
     }
 
