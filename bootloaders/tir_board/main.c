@@ -455,7 +455,10 @@ int main(void)
     if (jump_to_app_now && (boot_n_pin != 0) && !stay_in_bootloader)
     {
       jump_to_app_now = false;
-      clearFPGA();
+      if (upload_fpga)
+      {
+        clearFPGA();
+      }
       check_start_application();
     }
 
